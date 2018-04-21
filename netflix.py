@@ -16,9 +16,15 @@ import fauxmo
 import logging
 import time
 
+import subprocess
+
 from debounce_handler import debounce_handler
 
 logging.basicConfig(level=logging.DEBUG)
+
+def tv_command(command):
+  subprocess.call(["bash", "tvcommand.sh", "192.168.0.15", command])
+
 
 class device_handler(debounce_handler):
     """Publishes the on/off state requested,
@@ -28,6 +34,10 @@ class device_handler(debounce_handler):
 
     def act(self, client_address, state, name):
         print "State", state, "on ", name, "from client @", client_address
+        if state == True:
+            tv_command("AAAAAgAAABoAAAB8Aw==") # netflix
+        if state == False:
+            tv_command("AAAAAQAAAAEAAAAvAw==") # Power off
         return True
 
 if __name__ == "__main__":
